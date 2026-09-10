@@ -44,7 +44,10 @@ bug** — confirmed by reading `coredevices/mobileapp`'s own source. A sideloade
 `PbwApp.toLockerEntry()` in `libpebble3/.../disk/pbw/PbwApp.kt`) only populates `pbwIconResourceId` (the
 on-watch icon above) and leaves `iconImageUrl` — what the Locker *list* actually renders from — at its
 `null` default, since that field only ever comes from `appstoreData`, which is unconditionally `null` for
-every sideloaded entry. Resolves itself once actually published.
+every sideloaded entry. **Confirmed for real, not just predicted**: after publishing, removing the
+sideloaded install and installing the app store version instead shows the icon rendering correctly — see
+`docs/TROUBLESHOOTING.md`'s "Switching from a sideloaded install to the app store version" for that test
+(it also confirmed the config page's webhook URL/token survive the switch automatically).
 
 ## Screenshots
 

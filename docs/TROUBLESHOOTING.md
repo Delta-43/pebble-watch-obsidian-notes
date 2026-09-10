@@ -96,6 +96,20 @@ sudo apt install -y libsdl2-2.0-0 libglib2.0-0 libpixman-1-0 zlib1g libsndio7.0
 Add `--vnc` to every emulator-interacting `pebble` command (installs, screenshots, `emu-button`, `logs`)
 in a headless/no-X11 environment.
 
+## Switching from a sideloaded install to the app store version
+
+**Question**: if you sideloaded Delta Notes during development (or before it was published) and want to
+move to the real app store install, do you have to redo the config page (webhook URL + auth token)?
+
+**Tested, confirmed real**: no. Removing the sideloaded app from the phone's Locker and installing the
+app store version instead (same UUID either way — the store build was generated from the same `.pbw`, the
+UUID is never regenerated, see `docs/STORE_LISTING.md`) carried the webhook URL and auth token over
+automatically; no need to re-enter them in Settings. The config values live in Clay/PebbleKit JS's own
+phone-side storage, keyed by the app's UUID, not in the Locker database entry that gets deleted and
+recreated — so they survive a full remove-and-reinstall cycle as long as the UUID doesn't change. Also
+confirmed at the same time: the Locker icon, which showed blank on the sideloaded install (see
+`docs/STORE_LISTING.md`'s Icons section for why), renders correctly once installed from the actual store.
+
 ## "Developer Connection" isn't where the generic Pebble docs say it is
 
 **Symptom**: you enabled "Developer Mode" somewhere in Settings but can't find a "Developer Connection"

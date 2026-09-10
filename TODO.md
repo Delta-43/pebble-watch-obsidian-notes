@@ -218,11 +218,29 @@ checkboxes as work lands; when a phase surfaces a real gotcha, record it in `doc
   **Verified**: clean build (zero warnings) across all 5 platforms; reinstalled to the `emery` emulator
   and confirmed the idle screen and SELECT→dictation-UI behavior are pixel-identical to pre-refactor.
 
-- [ ] **Phase 7 — watch UI polish + icon assets**
-  Icon assets now substantially done (see above) — remaining: confirm `APP_ICON` renders correctly in
-  the real phone app's Locker (user to check), and finalize `appinfo`/store-facing metadata (Phase 9).
-  ✓ Saved / ✗ Failed result screens; pencil-tip icon exported at every required platform size; finalize
-  `appinfo.json` (real UUID via `pebble` CLI project init, display name "Delta Notes").
+- [x] **Phase 7 — watch UI polish + icon assets**
+  Verified for real via the emulator rather than assumed from the code: built, installed, and
+  screenshotted the idle screen, "Saved!", and a 3-line "Failed:\nNo phone\nconnection" result on
+  **emery** (Pebble Time 2, the primary target, touch), **chalk** (round — the layout risk case), and
+  **flint** (Pebble 2 Duo). All render cleanly with no text clipping. Used the same temporary
+  `select_click_handler()` bypass technique as Phase 6a (preview the result screens without a real
+  dictation call, reverted immediately after — `git diff` confirmed clean before moving on).
+  The chalk result screen looked clipped by the round bezel on first glance; pixel-row analysis of the
+  screenshot showed that was the round mask's corner vignette (which `pebble screenshot` does render),
+  not the text — the actual glyphs sit entirely within rows ~70–131 of a 180px-tall display, well
+  clear of the mask. No layout bug, no fix needed.
+  Also discovered (from the waf build cache's actual per-platform `#define`s, not assumption): **flint
+  does not define `PBL_TOUCH`** — it's black & white and non-touch, unlike emery. The mic icon's
+  `#ifdef PBL_TOUCH` gate in `mic_icon.c`/`main.c` already handles this correctly (icon only compiles in
+  and shows on emery among the five built targets); this just confirms the capability-gated design
+  decision (see `CLAUDE.md`) was already right, no code change required.
+  Icon sizing confirmed against current SDK docs (`developer.repebble.com/guides/app-resources/images.md`):
+  the menu icon must be exactly 25x25 — "icons that are larger will be rejected by the SDK" — the same
+  size for every platform, no per-platform variants needed. `watchapp/resources/images/app_icon.png` is
+  already exactly 25x25.
+  **Still the user's own to check** (needs a real phone, not the emulator): `APP_ICON` rendering in the
+  real Pebble mobile app's Locker. `appinfo`/store-facing metadata polish is Phase 9's scope, not this
+  phase's.
 
 - [x] **Phase 8a — docs/SETUP.md and docs/TROUBLESHOOTING.md**
   Both written and reflect real, tested behavior (not aspirational): `SETUP.md` covers both deploy paths

@@ -299,7 +299,9 @@ checkboxes as work lands; when a phase surfaces a real gotcha, record it in `doc
   (Phase 10) itself, which needs their developer account.
 
 - [ ] **Phase 10 — publish**
-  Push finished repo to `main`; user submits to the app store themselves using Phase 9's assets.
+  Repo pushed to `main` (6 commits: C fixes, README, Phase 7, idle-prompt copy, Phase 9, the Locker icon
+  finding). Remaining: the actual submission click-through, walking `docs/STORE_LISTING.md`'s checklist —
+  needs the user's own Core Devices developer account, which this repo/session has no access to.
 
 ## Local dev environment (how Phase 1-6a were actually done)
 

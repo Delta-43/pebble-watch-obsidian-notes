@@ -1,0 +1,49 @@
+name: Build watchapp
+
+# Builds the watchapp with the real Pebble SDK toolchain and attaches the resulting .pbw to the
+# GitHub Release that triggered the run. This is this repo's equivalent of the sibling project's
+# docker-publish.yml -- same idea (CI builds and publishes the real deliverable on release), different
+# artifact type, since this repo builds no Docker images of its own (see CLAUDE.md/PLAN.md: it
+# deliberately reuses the sibling project's already-published mcp-obsidian image rather than building
+# one here).
+#
+# The published .pbw is a convenience for sideloading/inspection -- the actual distribution channel
+# for end users is the Pebble Appstore listing (see README.md), not this artifact.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # needed to upload a release asset
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: watchapp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pebble-tool
+        run: pip install pebble-tool
+
+      - name: Install Pebble SDK
+        run: pebble sdk install latest
+
+      - name: Build
+        run: pebble build
+
+      - name: Attach .pbw to the release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ github.event.release.tag_name }}" build/watchapp.pbw --clobber

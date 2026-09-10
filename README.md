@@ -20,6 +20,8 @@
   <img src="https://img.shields.io/badge/C-Pebble%20SDK%203-00599C.svg?style=plastic&logo=c&logoColor=white" alt="Language: C, Pebble SDK 3">
   <a href="docker/docker-compose.yml"><img src="https://img.shields.io/badge/docker-compose-2496ED.svg?style=plastic&logo=docker&logoColor=white" alt="Docker Compose"></a>
   <a href="https://n8n.io/"><img src="https://img.shields.io/badge/built%20with-n8n-EA4B71.svg?style=plastic" alt="Built with n8n"></a>
+  <a href="https://github.com/Delta-43/pebble-watch-obsidian-notes/actions/workflows/build-pbw.yml"><img src="https://img.shields.io/github/actions/workflow/status/Delta-43/pebble-watch-obsidian-notes/build-pbw.yml?branch=main&label=build&style=plastic" alt="Build status"></a>
+  <a href="https://github.com/Delta-43/pebble-watch-obsidian-notes/releases/latest"><img src="https://img.shields.io/github/v/release/Delta-43/pebble-watch-obsidian-notes.svg?style=plastic" alt="Latest release"></a>
 </p>
 
 <p align="center">
@@ -184,9 +186,14 @@ the full evidence behind the "validated on real hardware" claim above.
 
 ## Quick start
 
-This covers the **standalone** path (you don't already run `pebble-index-research-agent`). For the
-**integrated** path (reuse an existing `pebble-index-research-agent` deployment's `mcp-obsidian`), or for
-full detail on either path, see [`docs/SETUP.md`](docs/SETUP.md).
+Most people should just [install Delta Notes from the Pebble Appstore](https://apps.repebble.com/c2c541a7bc004712894f8d46)
+— nothing to build. What follows is for building from source (contributing, or wanting the very latest
+`main`); a pre-built `.pbw` is also attached to every [GitHub Release](https://github.com/Delta-43/pebble-watch-obsidian-notes/releases/latest)
+if you just want to sideload without a local toolchain.
+
+This covers the **standalone** backend path (you don't already run `pebble-index-research-agent`). For
+the **integrated** path (reuse an existing `pebble-index-research-agent` deployment's `mcp-obsidian`), or
+for full detail on either path, see [`docs/SETUP.md`](docs/SETUP.md).
 
 ```bash
 git clone https://github.com/Delta-43/pebble-watch-obsidian-notes.git

@@ -33,7 +33,8 @@ standalone, or be pointed at an existing `pebble-index-research-agent` n8n deplo
   Webhook Trigger node (Header Auth: shared secret token)
   → obsidian_create_note (MCP Client Tool → mcp-obsidian)
   → writes into "Watch Inbox/" in the vault, tags [pebble_watch, quick_note],
-    title = timestamp + first few words of the dictated text
+    title = timestamp (with seconds) + fixed "Watch Note" suffix — deliberately not derived
+    from the dictated text, so titles stay predictable/sortable
 
 [Watch shows a ✓ Saved / ✗ Failed result screen based on the phone's reply]
 ```

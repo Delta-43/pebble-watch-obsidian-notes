@@ -25,7 +25,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [-440, 0],
-      "notes": "Filename doubles as the note title (Obsidian convention) \u2014 timestamp + first few words of the dictated text, sanitized for filesystem-unsafe characters. 'Watch Inbox/' is created automatically by obsidian_create_note (create_parents defaults true).",
+      "notes": "Filename doubles as the note title (Obsidian convention) \u2014 timestamp + fixed 'Watch Note' suffix (deliberately not derived from the dictated text, so titles stay predictable/sortable). Includes seconds (HHmmss, not just HHmm) specifically to avoid obsidian_create_note's overwrite guard colliding two distinct notes dictated within the same clock-minute \u2014 with minute-only precision the second note would genuinely fail to save, not just show the cosmetic retry false-negative documented in docs/TROUBLESHOOTING.md. 'Watch Inbox/' is created automatically by obsidian_create_note (create_parents defaults true).",
       "notesInFlow": true,
       "parameters": {
         "mode": "manual",
@@ -35,7 +35,7 @@
               "id": "notePath",
               "name": "notePath",
               "type": "string",
-              "value": "={{ \"Watch Inbox/\" + $now.toFormat('yyyy-MM-dd HHmm') + \" - \" + ($json.body.text.split(' ').slice(0, 6).join(' ').replace(/[\\\\/:*?\"<>|#^\\[\\]]/g, '').trim() || 'note') + \".md\" }}"
+              "value": "={{ \"Watch Inbox/\" + $now.toFormat('yyyy-MM-dd HHmmss') + \" Watch Note.md\" }}"
             },
             {
               "id": "noteContent",

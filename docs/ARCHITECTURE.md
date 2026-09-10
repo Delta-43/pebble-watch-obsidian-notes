@@ -120,8 +120,10 @@ does, so there's no reason to also relay them over AppMessage.
    (credential shipped unattached — never commit secrets, see `docs/SETUP.md`), `responseMode: lastNode`
    so the phone's HTTP response only comes back *after* the note is actually written, not immediately on
    receipt — the watch's "Saved!"/"Failed" screen genuinely reflects what happened.
-2. **Build Note** (`n8n-nodes-base.set`) — computes the note's path (`Watch Inbox/<timestamp> - <first
-   few words>.md`) and content (YAML frontmatter + the dictated text). Every expression here is wrapped
+2. **Build Note** (`n8n-nodes-base.set`) — computes the note's path (`Watch Inbox/<timestamp, HHmmss>
+   Watch Note.md` — fixed suffix rather than derived from the dictated text, so titles stay
+   predictable/sortable; seconds precision avoids `obsidian_create_note`'s overwrite guard colliding two
+   distinct same-minute notes) and content (YAML frontmatter + the dictated text). Every expression here is wrapped
    in `={{ ... }}` — a bare `="<expr>"` prefix is *not* valid n8n expression syntax and silently sends
    the literal, unparsed text instead (a real bug hit and fixed during development — see
    `docs/TROUBLESHOOTING.md`).

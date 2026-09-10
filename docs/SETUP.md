@@ -149,8 +149,8 @@ Press SELECT on the watch, dictate something, wait for it to confirm the transcr
 seconds you should see **"Saved!"** on the watch. Check:
 
 - **n8n's Executions list** — a new run of "Delta Notes → Watch Inbox".
-- **Your vault's `Watch Inbox/` folder** — a new note, filename = timestamp + the first few words of
-  what you said, frontmatter tags `[pebble_watch, quick_note]`.
+- **Your vault's `Watch Inbox/` folder** — a new note, filename = timestamp (e.g.
+  `2026-09-10 114932 Watch Note.md`), frontmatter tags `[pebble_watch, quick_note]`.
 - **Your phone/desktop Obsidian** — the note should sync down automatically, the same way notes from any
   other device do.
 

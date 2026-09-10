@@ -308,6 +308,21 @@ checkboxes as work lands; when a phase surfaces a real gotcha, record it in `doc
   portal-confirmed version of everything that was still an open item going in.
   **Delta Notes is live**: https://apps.repebble.com/c2c541a7bc004712894f8d46
 
+- [x] **Post-launch (2026-09-10) — fixed-format note titles**
+  `n8n/workflows/delta-notes.json`'s `Build Note` Set node changed: `notePath` no longer derives from the
+  dictated text (was `<timestamp> - <first 6 words>`) — now a fixed `<timestamp> Watch Note.md` suffix,
+  per user request for predictable/sortable titles. Timestamp format bumped from `HHmm` to `HHmmss`
+  specifically because dropping the text from the filename removed the thing that kept two distinct
+  same-minute notes from colliding — `obsidian_create_note` refuses to overwrite an existing file, so
+  minute-only precision would make a second same-minute note genuinely fail to save (not just the
+  cosmetic retry false-negative from Phase 6a). Seconds precision closes that gap; confirmed with the user
+  before implementing since it's a real (if rare) data-loss tradeoff, not a style choice.
+  Tag autogeneration (LLM-based content tagging) was discussed and deliberately **not** pursued — stays
+  out of this workflow, which is intentionally the non-LLM deterministic save from Phase 4. Anyone who
+  wants heavier note processing (real content understanding, tagging, etc.) can wire `Watch Inbox/` notes
+  into `pebble-index-research-agent`'s own pipeline instead, as an additive branch rather than a change to
+  this workflow — see the "Key decisions" note on this in `CLAUDE.md`.
+
 ## Local dev environment (how Phase 1-6a were actually done)
 
 Not committed to the repo (tooling, not project code) — whoever picks this up needs their own copy:

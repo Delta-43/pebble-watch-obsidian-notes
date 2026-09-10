@@ -114,9 +114,14 @@ Read `PLAN.md` for the full architecture and rationale; `TODO.md` for the phase-
     entirely — just import the same workflow JSON into that existing n8n and reuse its already-running
     `mcp-obsidian`.
 - **Note destination**: new `Watch Inbox/` folder (not `Index Inbox/` — deliberately decoupled from the
-  ring's research pipeline), tags `[pebble_watch, quick_note]`, title = timestamp + first few words.
+  ring's research pipeline), tags `[pebble_watch, quick_note]`, title = timestamp (with seconds) + fixed
+  "Watch Note" suffix (changed 2026-09-10 from timestamp + first few words of the dictated text, so
+  titles stay predictable/sortable rather than content-derived — see TODO.md's "Post-launch" entry).
   Wiring in the research agent later (if ever wanted) is an additive branch on the workflow, not a
-  rewrite.
+  rewrite — e.g. LLM-based tag autogeneration was deliberately left out of *this* workflow (stays
+  non-LLM/deterministic per Phase 4's intent, see `TODO.md`'s "Post-launch" entry), but anyone wanting
+  heavier note processing can point `Watch Inbox/` notes at `pebble-index-research-agent`'s own pipeline
+  instead, rather than adding an LLM call here.
 - **License**: AGPLv3 (already in `LICENSE`), matching the sibling project.
 - **Repo name**: staying `pebble-watch-obsidian-notes` (not renamed to `delta-notes`) — only the app's
   display name/branding is "Delta Notes".

@@ -1,0 +1,54 @@
+# Delta Notes — standalone backend
+#
+# Only for the "standalone" deployment path (see ../docs/SETUP.md). If you already run
+# pebble-index-research-agent, skip this file entirely — reuse its existing mcp-obsidian and just
+# import ../n8n/workflows/delta-notes.json into its existing n8n instance instead.
+#
+# Assumes an n8n instance already exists elsewhere on this server/network — this file doesn't start
+# one (same convention as pebble-index-research-agent's own docker-compose.yml). Deployed standalone
+# from the `docker/` directory (`docker compose up -d`), not merged into your n8n compose project.
+#
+# Ships only mcp-obsidian, reusing pebble-index-research-agent's own published image (it's already
+# generic — VAULT_NAME/VAULT_MOUNT env vars, no ring/research-specific logic) rather than building a
+# second copy of the same thing.
+#
+# `name:` below is NOT cosmetic — Compose defaults a project's name to its directory's name, and this
+# file lives in a directory called `docker/` just like the sibling project's own compose file does. If
+# you run both without an explicit name, Compose treats them as the SAME project (since they'd both
+# default to "docker") and a service name collision (both define `mcp-obsidian`) makes `docker compose
+# up` here silently recreate/replace the sibling project's real, already-running container instead of
+# creating a separate one. Pin the name explicitly so this can never happen, however the parent folder
+# is named.
+name: delta-notes
+
+services:
+  # Bridges the stdio obsidian-mcp server to an SSE endpoint n8n's MCP Client node can call.
+  # Points at whatever local vault directory you give it — how that vault gets onto this machine
+  # (LiveSync, Syncthing, iCloud Drive, or Obsidian just running here) is outside this project's scope.
+  #
+  # SECURITY: deliberately NOT publishing a host port — same reasoning as the sibling project. This
+  # endpoint has no authentication (network isolation is the security boundary, not app-level auth) and
+  # can read/write the whole vault; n8n reaches it over its own Docker network by DNS
+  # (mcp-obsidian:8801). A host port would only add unauthenticated read/write-the-vault exposure to
+  # the LAN/WAN for zero functional benefit.
+  mcp-obsidian:
+    image: ghcr.io/delta-43/pebble-index-research-agent/mcp-obsidian:latest
+    container_name: delta-notes-mcp-obsidian
+    restart: unless-stopped
+    environment:
+      VAULT_NAME: ${VAULT_NAME:-notes}
+    networks:
+      - n8n_internal
+    volumes:
+      - ${VAULT_PATH}:/vault
+    # The vault directory needs a pre-existing .obsidian/ folder (obsidian-mcp refuses a vault
+    # without one) — create it once on the host: mkdir -p "$VAULT_PATH/.obsidian"
+
+networks:
+  # n8n's own existing network — external because this project doesn't own/manage n8n's compose stack.
+  # Every n8n install names this differently; find yours with `docker network ls` (look for the one
+  # your n8n container is actually on), or more precisely:
+  # `docker inspect <your-n8n-container-name> --format '{{json .NetworkSettings.Networks}}'`
+  n8n_internal:
+    external: true
+    name: ${N8N_NETWORK_NAME}

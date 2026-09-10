@@ -1,0 +1,16 @@
+# Pebble SDK build output
+watchapp/build/
+watchapp/node_modules/
+watchapp/.lock-waf_*
+
+# Never commit real secrets / deployment specifics
+/.env
+docker/.env
+
+# Raw design drop-off (huge source files) -- design/ has right-sized versions that are actually
+# used/committed; this is just the working folder for originals.
+/assets/
+
+# OS/editor cruft
+.DS_Store
+*.swp

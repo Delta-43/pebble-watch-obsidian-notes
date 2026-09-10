@@ -1,0 +1,48 @@
+{
+  "name": "delta-notes",
+  "author": "Delta-43",
+  "version": "1.0.0",
+  "keywords": [
+    "pebble-app"
+  ],
+  "private": true,
+  "dependencies": {
+    "@rebble/clay": "^1.1.0"
+  },
+  "pebble": {
+    "displayName": "Delta Notes",
+    "uuid": "6bc558aa-cf0a-4cf6-81bb-3dcdf38599fd",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "basalt",
+      "chalk",
+      "diorite",
+      "emery",
+      "flint"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "messageKeys": [
+      "noteText",
+      "resultStatus",
+      "resultMessage"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "APP_ICON",
+          "file": "images/app_icon.png",
+          "menuIcon": true
+        },
+        {
+          "type": "bitmap",
+          "name": "MIC_ICON",
+          "file": "images/mic_icon.png"
+        }
+      ]
+    }
+  }
+}

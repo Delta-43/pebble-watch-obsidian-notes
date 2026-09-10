@@ -1,0 +1,34 @@
+[
+  {
+    "type": "heading",
+    "defaultValue": "Delta Notes Setup"
+  },
+  {
+    "type": "text",
+    "defaultValue": "Enter your n8n webhook URL and the auth token you set on its Header Auth credential. See docs/SETUP.md in the Delta Notes repo if you haven't deployed the backend yet."
+  },
+  {
+    "type": "input",
+    "messageKey": "webhookUrl",
+    "label": "Webhook URL",
+    "defaultValue": "",
+    "attributes": {
+      "placeholder": "https://your-n8n-host/webhook/delta-notes",
+      "type": "url"
+    }
+  },
+  {
+    "type": "input",
+    "messageKey": "authToken",
+    "label": "Auth Token",
+    "defaultValue": "",
+    "attributes": {
+      "placeholder": "shared secret token",
+      "type": "password"
+    }
+  },
+  {
+    "type": "submit",
+    "defaultValue": "Save"
+  }
+]

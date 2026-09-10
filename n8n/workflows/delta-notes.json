@@ -1,0 +1,87 @@
+{
+  "id": "delta-notes-watch-inbox",
+  "name": "Delta Notes \u2192 Watch Inbox",
+  "nodes": [
+    {
+      "id": "b1e2c3d4-0001-4a1a-9c1a-delta0000001",
+      "name": "Delta Notes Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-680, 0],
+      "notes": "Header Auth credential is deliberately not attached in this exported JSON (never commit real secrets) \u2014 create an httpHeaderAuth credential (header name e.g. X-Auth-Token, value = a random shared secret) and attach it to this node's Authentication after import. The same URL + token go into the watchapp's on-phone config page. responseMode is 'lastNode' so the phone only gets a success response after the note is actually written.",
+      "notesInFlow": true,
+      "webhookId": "delta-notes",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "delta-notes",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "b1e2c3d4-0002-4a1a-9c1a-delta0000002",
+      "name": "Build Note",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [-440, 0],
+      "notes": "Filename doubles as the note title (Obsidian convention) \u2014 timestamp + first few words of the dictated text, sanitized for filesystem-unsafe characters. 'Watch Inbox/' is created automatically by obsidian_create_note (create_parents defaults true).",
+      "notesInFlow": true,
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "notePath",
+              "name": "notePath",
+              "type": "string",
+              "value": "={{ \"Watch Inbox/\" + $now.toFormat('yyyy-MM-dd HHmm') + \" - \" + ($json.body.text.split(' ').slice(0, 6).join(' ').replace(/[\\\\/:*?\"<>|#^\\[\\]]/g, '').trim() || 'note') + \".md\" }}"
+            },
+            {
+              "id": "noteContent",
+              "name": "noteContent",
+              "type": "string",
+              "value": "={{ \"---\\ntags: [pebble_watch, quick_note]\\ncreated: \" + $now.toISO() + \"\\n---\\n\\n\" + $json.body.text + \"\\n\" }}"
+            }
+          ]
+        },
+        "includeOtherFields": false
+      }
+    },
+    {
+      "id": "b1e2c3d4-0003-4a1a-9c1a-delta0000003",
+      "name": "Create Note",
+      "type": "@n8n/n8n-nodes-langchain.mcpClient",
+      "typeVersion": 1.1,
+      "position": [-200, 0],
+      "notes": "Calls obsidian-mcp's obsidian_create_note tool directly \u2014 deliberately no AI Agent/LLM in this workflow, this is a deterministic save, not a research task. endpointUrl assumes mcp-obsidian is reachable on n8n's own Docker network (either this repo's docker-compose, standalone mode, or the pebble-index-research-agent stack, integrated mode) \u2014 see docs/SETUP.md for both. vault name ('notes') must match mcp-obsidian's VAULT_NAME env var.",
+      "notesInFlow": true,
+      "parameters": {
+        "serverTransport": "sse",
+        "endpointUrl": "http://mcp-obsidian:8801/sse",
+        "authentication": "none",
+        "tool": {
+          "__rl": true,
+          "mode": "id",
+          "value": "obsidian_create_note"
+        },
+        "inputMode": "json",
+        "jsonInput": "={\n  \"vault\": \"notes\",\n  \"path\": {{ JSON.stringify($json.notePath) }},\n  \"content\": {{ JSON.stringify($json.noteContent) }},\n  \"create_parents\": true\n}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Delta Notes Webhook": {
+      "main": [[{ "node": "Build Note", "type": "main", "index": 0 }]]
+    },
+    "Build Note": {
+      "main": [[{ "node": "Create Note", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -11,12 +11,16 @@ static GBitmap	*s_icon_bitmap;
  * @brief Layer update proc: draws the mic bitmap at its native size (it's
  *			already rendered at MIC_ICON_SIZE, so no scaling happens here),
  *			respecting the bitmap's own transparency (GCompOpSet) rather than
- *			drawing a solid rectangle over whatever is behind it.
+ *			drawing a solid rectangle over whatever is behind it. Draws
+ *			nothing if the bitmap resource failed to load -- tapping still
+ *			works either way, since touch_handler() doesn't depend on it.
  * @param layer The icon layer being drawn.
  * @param ctx The graphics context to draw into.
  */
 static void	icon_update_proc(Layer *layer, GContext *ctx)
 {
+	if (!s_icon_bitmap)
+		return ;
 	graphics_context_set_compositing_mode(ctx, GCompOpSet);
 	graphics_draw_bitmap_in_rect(ctx, s_icon_bitmap, layer_get_bounds(layer));
 }
@@ -53,6 +57,8 @@ void	mic_icon_create(Layer *parent_layer, GRect window_bounds)
 			MIC_ICON_SIZE,
 			MIC_ICON_SIZE);
 	s_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_MIC_ICON);
+	if (!s_icon_bitmap)
+		APP_LOG(APP_LOG_LEVEL_ERROR, "mic icon bitmap failed to load");
 	s_icon_layer = layer_create(icon_frame);
 	layer_set_update_proc(s_icon_layer, icon_update_proc);
 	layer_add_child(parent_layer, s_icon_layer);

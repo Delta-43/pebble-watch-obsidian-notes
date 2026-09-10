@@ -8,6 +8,31 @@
 #define NOTE_BUFFER_SIZE 512
 
 static DictationSession	*s_dictation_session;
+/* True from the moment dictation_session_start() is called until the OS
+ * calls dictation_callback() with a final status. Distinct from
+ * note_transport_is_busy(), which only covers the later "waiting for the
+ * phone's reply" phase -- without this flag, a second trigger fired while
+ * the OS is still listening would re-enter dictation_session_start() on the
+ * same session. */
+static bool			s_listening;
+
+static void	dictation_callback(DictationSession *session,
+	DictationSessionStatus status, char *transcription, void *context);
+
+/*
+ * @brief Creates (or, after a prior failure, retries creating) the
+ *			DictationSession. Safe to call more than once -- no-ops if a
+ *			session already exists.
+ */
+static void	create_session_if_needed(void)
+{
+	if (s_dictation_session)
+		return ;
+	s_dictation_session = dictation_session_create(NOTE_BUFFER_SIZE,
+			dictation_callback, NULL);
+	if (s_dictation_session)
+		dictation_session_enable_confirmation(s_dictation_session, true);
+}
 
 /*
  * @brief DictationSession callback: called once the OS finishes (or gives
@@ -27,6 +52,7 @@ static DictationSession	*s_dictation_session;
 static void	dictation_callback(DictationSession *session,
 	DictationSessionStatus status, char *transcription, void *context)
 {
+	s_listening = false;
 	if (status == DictationSessionStatusSuccess)
 	{
 		note_transport_send_note(transcription);
@@ -42,9 +68,7 @@ static void	dictation_callback(DictationSession *session,
 
 void	dictation_handler_init(void)
 {
-	s_dictation_session = dictation_session_create(NOTE_BUFFER_SIZE,
-			dictation_callback, NULL);
-	dictation_session_enable_confirmation(s_dictation_session, true);
+	create_session_if_needed();
 }
 
 void	dictation_handler_deinit(void)
@@ -54,12 +78,23 @@ void	dictation_handler_deinit(void)
 
 void	dictation_handler_start(void)
 {
-	if (note_transport_is_busy())
+	if (note_transport_is_busy() || s_listening)
 		return ;
+	/* dictation_session_create() can fail (e.g. phone disconnected at
+	 * launch) and leave s_dictation_session NULL -- retry it here so a
+	 * phone reconnecting later isn't stuck with a permanently-broken
+	 * session for the rest of the app's life. */
+	create_session_if_needed();
+	if (!s_dictation_session)
+	{
+		status_display_show_result("Dictation not\navailable");
+		return ;
+	}
 	/* A result screen still on display counts as idle -- the user can
 	 * retry immediately without waiting for it to auto-revert. Cancel that
 	 * pending revert so it can't fire mid-retry and reset the screen while
 	 * this new attempt is still in progress. */
 	status_display_cancel_pending_revert();
+	s_listening = true;
 	dictation_session_start(s_dictation_session);
 }

@@ -10,19 +10,35 @@ static bool			s_waiting_for_reply;
 static AppTimer		*s_result_timeout_timer;
 
 /*
+ * @brief Clears the "waiting for a reply" state shared by every path that
+ *			ends it: a real reply, a send failure, or a timeout.
+ * @param cancel_timer Whether to actually cancel s_result_timeout_timer.
+ *			Pass true from any path *other* than the timer's own callback
+ *			(a real reply or a send failure, where the timer is still
+ *			pending and must be stopped). Pass false from
+ *			result_timeout_callback() itself -- by the time that callback
+ *			runs, the timer has already fired and the SDK has invalidated its
+ *			handle, so calling app_timer_cancel() on it there would operate
+ *			on a stale AppTimer pointer.
+ */
+static void	clear_waiting_state(bool cancel_timer)
+{
+	if (cancel_timer && s_result_timeout_timer)
+		app_timer_cancel(s_result_timeout_timer);
+	s_result_timeout_timer = NULL;
+	s_waiting_for_reply = false;
+}
+
+/*
  * @brief Stops waiting for a reply: cancels the timeout timer (if one is
  *			pending) and marks the transport as no longer busy. Called from
- *			every path that ends the "waiting for the phone" period, whether
- *			that's a real reply, a send failure, or a timeout.
+ *			every path that ends the "waiting for the phone" period other
+ *			than the timeout itself (see result_timeout_callback()), whether
+ *			that's a real reply or a send failure.
  */
 static void	stop_waiting_for_reply(void)
 {
-	if (s_result_timeout_timer)
-	{
-		app_timer_cancel(s_result_timeout_timer);
-		s_result_timeout_timer = NULL;
-	}
-	s_waiting_for_reply = false;
+	clear_waiting_state(true);
 }
 
 /*
@@ -33,8 +49,7 @@ static void	stop_waiting_for_reply(void)
  */
 static void	result_timeout_callback(void *data)
 {
-	s_result_timeout_timer = NULL;
-	s_waiting_for_reply = false;
+	clear_waiting_state(false);
 	status_display_show_result("Timed out\nwaiting for phone");
 }
 
@@ -96,10 +111,15 @@ static void	outbox_failed_handler(DictionaryIterator *iterator,
 
 void	note_transport_init(void)
 {
+	AppMessageResult	result;
+
 	app_message_register_inbox_received(inbox_received_handler);
 	app_message_register_outbox_failed(outbox_failed_handler);
-	app_message_open(app_message_inbox_size_maximum(),
-		app_message_outbox_size_maximum());
+	result = app_message_open(app_message_inbox_size_maximum(),
+			app_message_outbox_size_maximum());
+	if (result != APP_MSG_OK)
+		APP_LOG(APP_LOG_LEVEL_ERROR,
+			"app_message_open() failed: %d -- notes will not send", result);
 }
 
 void	note_transport_deinit(void)
@@ -116,18 +136,35 @@ void	note_transport_send_note(char *transcription)
 {
 	DictionaryIterator	*out_iter;
 	AppMessageResult	result;
+	DictionaryResult	dict_result;
+	const char			*failure_message;
 
+	failure_message = NULL;
 	result = app_message_outbox_begin(&out_iter);
 	if (result != APP_MSG_OK)
+		failure_message = "Failed to save note";
+	else
 	{
-		status_display_show_result("Failed to save note");
-		return ;
+		/* Checked (rather than ignored) because the outbox buffer size is
+		 * negotiated at app_message_open() time and isn't guaranteed to fit
+		 * a full NOTE_BUFFER_SIZE-length transcription plus dictionary
+		 * overhead -- without this check, a note too long for the buffer
+		 * would otherwise fail silently at app_message_outbox_send() with
+		 * the same generic message as a connectivity failure. */
+		dict_result = dict_write_cstring(out_iter, MESSAGE_KEY_noteText,
+				transcription);
+		if (dict_result != DICT_OK)
+			failure_message = "Note too long\nto send";
+		else
+		{
+			result = app_message_outbox_send();
+			if (result != APP_MSG_OK)
+				failure_message = "Failed to save note";
+		}
 	}
-	dict_write_cstring(out_iter, MESSAGE_KEY_noteText, transcription);
-	result = app_message_outbox_send();
-	if (result != APP_MSG_OK)
+	if (failure_message)
 	{
-		status_display_show_result("Failed to save note");
+		status_display_show_result(failure_message);
 		return ;
 	}
 	s_waiting_for_reply = true;

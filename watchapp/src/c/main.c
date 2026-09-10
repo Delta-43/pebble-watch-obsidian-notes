@@ -100,17 +100,25 @@ static void	window_unload(Window *window)
 
 /*
  * @brief Creates the window and initializes every other module. Order
- *			matters a little: the window is pushed (and so window_load()
- *			runs, creating the mic icon and subscribing to touch) before
- *			dictation_handler/note_transport are initialized, but none of
- *			those can actually fire until the user presses SELECT or taps the
- *			icon, so the exact ordering here isn't safety-critical -- it just
- *			mirrors the natural "screen first, then the things that act on
- *			it" reading order.
+ *			matters: dictation_handler/note_transport are initialized before
+ *			the window is pushed, because pushing the window runs
+ *			window_load() (which, on touch platforms, creates the mic icon
+ *			and subscribes to touch input) -- a touch delivered the instant
+ *			that subscription goes live could otherwise call
+ *			dictation_handler_start() before s_dictation_session exists, or
+ *			reach note_transport before its AppMessage channel is open.
+ * @return Nothing, but leaves s_window as NULL (and every other module
+ *			uninitialized) if window_create() itself fails, so callers must
+ *			not assume s_window is usable afterwards without checking.
  */
 static void	init(void)
 {
 	s_window = window_create();
+	if (!s_window)
+	{
+		APP_LOG(APP_LOG_LEVEL_ERROR, "window_create() failed, cannot start");
+		return ;
+	}
 	window_set_click_config_provider(s_window, click_config_provider);
 	window_set_window_handlers(s_window, (WindowHandlers){
 		.load = window_load,
@@ -119,9 +127,9 @@ static void	init(void)
 		.appear = window_appear,
 #endif
 	});
-	window_stack_push(s_window, true);
 	dictation_handler_init();
 	note_transport_init();
+	window_stack_push(s_window, true);
 }
 
 /*
@@ -134,9 +142,15 @@ static void	deinit(void)
 	window_destroy(s_window);
 }
 
+/*
+ * @brief Standard Pebble app entry point: initialize, run the event loop
+ *			until the app is closed, then tear down.
+ * @return Always 0 -- app_event_loop() only returns once the app is exiting.
+ */
 int	main(void)
 {
 	init();
 	app_event_loop();
 	deinit();
+	return (0);
 }

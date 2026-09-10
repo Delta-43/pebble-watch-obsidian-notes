@@ -1,8 +1,8 @@
-<h1 align="center">
-  <img src="design/app_icon_preview_144.png" height="120" alt="Delta Notes icon" />
-  <br />
-  Delta Notes
-</h1>
+<p align="center">
+  <img src="design/app_banner_720x320.png" alt="Delta Notes" width="640">
+</p>
+
+<h1 align="center">Delta Notes</h1>
 
 <p align="center">
   <i>Dictate a note on your wrist, find it in your Obsidian vault seconds later — no phone typing, no manual copy/paste.</i>

@@ -298,10 +298,15 @@ checkboxes as work lands; when a phase surfaces a real gotcha, record it in `doc
   Still the user's own: the real-phone Locker icon check carried over from Phase 7, and actual submission
   (Phase 10) itself, which needs their developer account.
 
-- [ ] **Phase 10 — publish**
-  Repo pushed to `main` (6 commits: C fixes, README, Phase 7, idle-prompt copy, Phase 9, the Locker icon
-  finding). Remaining: the actual submission click-through, walking `docs/STORE_LISTING.md`'s checklist —
-  needs the user's own Core Devices developer account, which this repo/session has no access to.
+- [x] **Phase 10 — publish**
+  Repo pushed to `main`. Submitted live, walking the actual portal step-by-step against
+  `docs/STORE_LISTING.md`'s checklist — three real gaps surfaced only by seeing the live form (the SDK
+  docs never covered any of them): an 80×80 "Small Icon" size the repo didn't have an asset for yet, a
+  separate screenshot per platform at each one's own exact native pixel size rather than one shared set,
+  and an optional 720×320 banner. All three closed for real (new assets generated and committed, not just
+  documented) before submitting — see the Phase 9 entry above and `docs/STORE_LISTING.md` for the final,
+  portal-confirmed version of everything that was still an open item going in.
+  **Delta Notes is live**: https://apps.repebble.com/c2c541a7bc004712894f8d46
 
 ## Local dev environment (how Phase 1-6a were actually done)
 

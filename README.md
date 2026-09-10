@@ -25,7 +25,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/dictation-validated%20on%20hardware-brightgreen.svg?style=plastic" alt="Dictation: validated on hardware">
   <img src="https://img.shields.io/badge/backend-validated%20end--to--end-brightgreen.svg?style=plastic" alt="Backend: validated end-to-end">
-  <img src="https://img.shields.io/badge/store%20submission-planned-lightgrey.svg?style=plastic" alt="Store submission: planned">
+  <a href="https://apps.repebble.com/c2c541a7bc004712894f8d46"><img src="https://img.shields.io/badge/appstore-live-brightgreen.svg?style=plastic" alt="App store: live"></a>
 </p>
 
 <p align="center">
@@ -41,9 +41,10 @@
   <a href="#license">License</a>
 </p>
 
-> **Status: fully validated end-to-end on real hardware** — dictation, the phone bridge, the webhook,
-> and the note landing in a real vault have all been confirmed on a real Pebble Time 2, not just an
-> emulator (see [Project status](#project-status)).
+> **Live on the Pebble Appstore**: https://apps.repebble.com/c2c541a7bc004712894f8d46 — fully validated
+> end-to-end on real hardware first (dictation, the phone bridge, the webhook, and the note landing in a
+> real vault all confirmed on a real Pebble Time 2, not just an emulator — see
+> [Project status](#project-status)).
 
 **→ [`docs/SETUP.md`](docs/SETUP.md) has the full step-by-step deployment guide.** This README covers
 the *what* and *why*; `docs/SETUP.md` is what you actually follow to build and deploy it yourself.
@@ -156,10 +157,11 @@ what broke, and how each real finding was verified rather than assumed.
 
 ## Project status
 
-Fully validated end-to-end on real hardware, not just in an emulator: dictation via Core Devices' cloud
-recognizer, the watch→phone AppMessage bridge, the phone's webhook call, and a real note landing in a
-real Obsidian vault have all been confirmed on an actual Pebble Time 2. Touch (tap-to-record) has been
-confirmed working on real hardware too. What's left is polish and store submission, not functionality.
+**Published and live.** Fully validated end-to-end on real hardware, not just in an emulator: dictation via
+Core Devices' cloud recognizer, the watch→phone AppMessage bridge, the phone's webhook call, and a real
+note landing in a real Obsidian vault have all been confirmed on an actual Pebble Time 2. Touch
+(tap-to-record) has been confirmed working on real hardware too. Every phase, including submission, is
+done — install it from [apps.repebble.com](https://apps.repebble.com/c2c541a7bc004712894f8d46).
 
 | Phase | Status | Detail |
 |---|---|---|
@@ -174,7 +176,7 @@ confirmed working on real hardware too. What's left is polish and store submissi
 | Docs (`SETUP.md`, `ARCHITECTURE.md`, `TROUBLESHOOTING.md`, this README) | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phases 8a–8b |
 | Watch UI polish + icon assets | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phase 7 — verified on emery/chalk/flint emulators, no layout bugs found |
 | App store submission prep (`docs/STORE_LISTING.md`, screenshots) | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phase 9 |
-| Publish to the Core Devices/Rebble app store | ![Planned](https://img.shields.io/badge/-Planned-lightgrey) | Phase 10 — submission click-through is the user's own, needs their dev account |
+| Publish to the Core Devices/Rebble app store | [![Live](https://img.shields.io/badge/-Live-brightgreen)](https://apps.repebble.com/c2c541a7bc004712894f8d46) | Phase 10 — [live listing](https://apps.repebble.com/c2c541a7bc004712894f8d46) |
 
 See [`TODO.md`](TODO.md) for the full phase-by-phase validation history — including two real bugs caught
 and fixed along the way, and one real deployment incident (self-caught, root-caused, fixed) — if you want

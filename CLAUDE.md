@@ -16,6 +16,22 @@ note. Can run fully standalone, or be wired into an existing `pebble-index-resea
 
 ## Current state (as of this writing)
 
+**Published (2026-09-10): Delta Notes is live on the Pebble Appstore** —
+https://apps.repebble.com/c2c541a7bc004712894f8d46. All 10 phases are done; this was the last one. Walked
+the actual Core Devices submission portal step-by-step (screen-by-screen, against `docs/STORE_LISTING.md`)
+rather than assuming the pre-written checklist covered everything, which surfaced three real gaps the SDK
+docs never mentioned: an 80×80 "Small Icon" the repo had no asset for (had 25/144/1024px, nothing at 80),
+a separate screenshot per platform at each one's own exact native pixel size rather than one shared set
+(basalt/diorite/flint all needed their own 144×168 capture, not just emery's 200×228 and chalk's 180×180),
+and an optional 720×320 banner. All three closed with real, committed assets (`design/app_icon_small_80.png`,
+per-platform screenshots under `docs/store-assets/screenshots/`, `design/app_banner_720x320.png`) before
+submitting, not just noted as follow-up work. `docs/STORE_LISTING.md` has the final, portal-confirmed
+version of every field. The Locker icon check from Phase 7 (real phone showed a blank/default icon there)
+turned out not to be a bug — confirmed by reading `coredevices/mobileapp`'s own source
+(`PbwApp.toLockerEntry()`): a sideloaded app's `LockerEntry` never gets an `iconImageUrl` since that only
+ever comes from `appstoreData`, which is `null` for every sideloaded install by design — it was always
+going to resolve itself once actually published, which it now has.
+
 Phases 0-5 done, and Phase 6a (end-to-end test of everything *except* the real dictation call) is also
 done and genuinely proved, not just code-reviewed: a real scratch vault + real `mcp-obsidian` + real n8n
 (workflow imported, Header Auth credential, published/activated) were stood up in throwaway Docker
@@ -105,9 +121,9 @@ Read `PLAN.md` for the full architecture and rationale; `TODO.md` for the phase-
 - **Repo name**: staying `pebble-watch-obsidian-notes` (not renamed to `delta-notes`) — only the app's
   display name/branding is "Delta Notes".
 - **Icon**: minimalist pencil-tip (writing end) silhouette.
-- **Publishing**: build with a real `appinfo.json` (UUID, name, icons) and prep a full
-  `docs/STORE_LISTING.md` so the app is submission-ready for the Core Devices/Rebble app store — actual
-  submission click-through is the user's own (needs their developer account).
+- **Publishing**: built with a real `appinfo.json` (UUID, name, icons), `docs/STORE_LISTING.md` covers the
+  submission prep, and the app is **now actually published** —
+  https://apps.repebble.com/c2c541a7bc004712894f8d46.
 
 ## Working conventions for this repo
 

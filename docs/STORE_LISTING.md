@@ -108,11 +108,18 @@ compare against on a first submission.
 - [x] Basic Details: name, type, category, description
 - [x] Icons: Small (80×80) + Large (144×144)
 - [x] Screenshots: per-platform, native sizes
-- [ ] Banner: skipped
-- [ ] Additional Info (step 5) — whatever this asks for, not yet seen
-- [ ] Submit for review
+- [x] Banner: skipped (optional, no design work scoped for this submission)
+- [x] Additional Info: Source Code URL filled in (`https://github.com/Delta-43/pebble-watch-obsidian-notes`),
+      Website URL and Companion Apps left blank (no dedicated companion app — Delta Notes runs inside the
+      standard, shared Pebble mobile app via PebbleKit JS, not a separate Android/iOS app)
+- [x] Submit for review
 
-## Not done in this phase
+## Live
 
-- Actual submission (clicking "Submit for review" and whatever review process follows) is the user's own
-  — needs their developer account, which this repo/session has no access to.
+**Delta Notes is published**: https://apps.repebble.com/c2c541a7bc004712894f8d46
+
+Submitted by walking the actual portal step-by-step rather than assuming the checklist above was
+complete — doing so surfaced three real requirements the SDK docs never covered (the 80×80 icon, one
+screenshot per platform at each one's own native size, the optional banner), all closed with real,
+committed assets before submitting. See the Icons/Screenshots/Banner sections above for exactly what was
+generated and why.

@@ -261,10 +261,23 @@ checkboxes as work lands; when a phase surfaces a real gotcha, record it in `doc
   dev-facing (not public) design record — no changes needed there beyond what's already been kept
   current phase-by-phase throughout the build.
 
-- [ ] **Phase 9 — app store submission prep**
-  `docs/STORE_LISTING.md`: UUID reservation via the Core Devices developer portal, full icon set,
-  screenshots, store description. Actual submission click-through is the user's own (needs their
-  developer account) — this phase prepares everything up to that point.
+- [x] **Phase 9 — app store submission prep**
+  [`docs/STORE_LISTING.md`](../docs/STORE_LISTING.md) written: manifest identity fields cross-checked
+  against `package.json`, both icon sizes identified (25×25 in-app menu icon, already SDK-max per Phase
+  7; 1024×1024 store icon from `design/`), four curated screenshots captured and committed under
+  `docs/store-assets/screenshots/` (idle/saved/a failure state on emery, plus idle on chalk for
+  cross-shape coverage — a *curated* subset of the full 9-state review set from this session, not all of
+  it), and short/full store description copy written to lead with the self-hosting requirement rather
+  than bury it post-install (see `docs/STORE_LISTING.md`'s own reasoning for why).
+  Also added `"capabilities": ["configurable"]` to `package.json` — a real, documented manifest field the
+  app was missing despite already having a working Clay config page; rebuilt and confirmed it reaches
+  `build/appinfo.json` correctly.
+  **Genuinely unverifiable from here, flagged rather than guessed**: exact store-icon pixel size,
+  screenshot limits, and category taxonomy the Core Devices submission *portal* itself expects — nothing
+  fetchable describes that UI (only the SDK's manifest docs), so `docs/STORE_LISTING.md` lists these as
+  open items to confirm at submission time rather than inventing numbers.
+  Still the user's own: the real-phone Locker icon check carried over from Phase 7, and actual submission
+  (Phase 10) itself, which needs their developer account.
 
 - [ ] **Phase 10 — publish**
   Push finished repo to `main`; user submits to the app store themselves using Phase 9's assets.

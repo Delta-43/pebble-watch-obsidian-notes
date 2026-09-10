@@ -172,8 +172,8 @@ confirmed working on real hardware too. What's left is polish and store submissi
 | Real dictation on Pebble Time 2 hardware | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phase 6b — the single biggest unverified assumption, now confirmed real |
 | Real backend deployed against the user's own n8n/vault | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phase 6c |
 | Docs (`SETUP.md`, `ARCHITECTURE.md`, `TROUBLESHOOTING.md`, this README) | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phases 8a–8b |
-| Watch UI polish + final icon/resource assets | ![Planned](https://img.shields.io/badge/-Planned-lightgrey) | Phase 7 |
-| App store submission prep (`docs/STORE_LISTING.md`, screenshots) | ![Planned](https://img.shields.io/badge/-Planned-lightgrey) | Phase 9 |
+| Watch UI polish + icon assets | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phase 7 — verified on emery/chalk/flint emulators, no layout bugs found |
+| App store submission prep (`docs/STORE_LISTING.md`, screenshots) | ![Done](https://img.shields.io/badge/-Done-brightgreen) | Phase 9 |
 | Publish to the Core Devices/Rebble app store | ![Planned](https://img.shields.io/badge/-Planned-lightgrey) | Phase 10 — submission click-through is the user's own, needs their dev account |
 
 See [`TODO.md`](TODO.md) for the full phase-by-phase validation history — including two real bugs caught
@@ -260,6 +260,7 @@ pebble-watch-obsidian-notes/
 | [`docs/SETUP.md`](docs/SETUP.md) | Step-by-step deployment guide — building the watchapp, both backend deployment paths, wiring up n8n, configuring the watchapp itself |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The *why* behind every design decision, and what was verified (and how) rather than assumed |
 | [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) | Real errors hit while building this, with exact causes and fixes — check here first if something breaks |
+| [`docs/STORE_LISTING.md`](docs/STORE_LISTING.md) | App store submission prep — manifest fields, icons, screenshots, listing copy, and what's still an open item for the actual submission portal |
 | [`PLAN.md`](PLAN.md) | The original design intent, agreed before any code was written — historical record of *why*, not a live doc |
 | [`TODO.md`](TODO.md) | Phase-by-phase build and validation checklist, including real bugs and one real deployment incident found along the way |
 | [`CLAUDE.md`](CLAUDE.md) | Living summary for AI coding agents picking up work on this repo — current state, key decisions, working conventions |

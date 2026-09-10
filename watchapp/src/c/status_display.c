@@ -1,6 +1,6 @@
 #include "status_display.h"
 
-#define IDLE_PROMPT "Press SELECT\nto dictate a note"
+#define IDLE_PROMPT "Let's take a note.\n(Press SELECT)"
 #define REVERT_TO_IDLE_DELAY_MS 3000
 
 static TextLayer	*s_text_layer;

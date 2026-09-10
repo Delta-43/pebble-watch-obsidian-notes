@@ -4,7 +4,7 @@
 
 /*
  * @brief Owns the single text layer that shows the app's current state to the
- *			user: the idle prompt ("Press SELECT to dictate a note"), "Sending...",
+ *			user: the idle prompt ("Let's take a note. (Press SELECT)"), "Sending...",
  *			or a final result ("Saved!", a failure reason, etc). Nothing outside
  *			this file ever touches the text layer directly -- every other module
  *			goes through the functions below instead.

@@ -238,9 +238,28 @@ checkboxes as work lands; when a phase surfaces a real gotcha, record it in `doc
   the menu icon must be exactly 25x25 — "icons that are larger will be rejected by the SDK" — the same
   size for every platform, no per-platform variants needed. `watchapp/resources/images/app_icon.png` is
   already exactly 25x25.
-  **Still the user's own to check** (needs a real phone, not the emulator): `APP_ICON` rendering in the
-  real Pebble mobile app's Locker. `appinfo`/store-facing metadata polish is Phase 9's scope, not this
-  phase's.
+  **The real-phone Locker icon check came back blank/default — investigated, and it's not a bug.**
+  Read `coredevices/mobileapp`'s actual source (`libpebble3/.../locker/Locker.kt`,
+  `disk/pbw/PbwApp.kt`, `database/entity/LockerEntry.kt`) rather than guess: a sideloaded app's
+  `LockerEntry` is built entirely by `PbwApp.toLockerEntry()`, which only ever populates
+  `pbwIconResourceId` (the on-**watch** icon, sent to the watch itself over Bluetooth via
+  `AppMetadata.icon` — this is the `APP_ICON`/`menuIcon` resource, and it's what Phase 7's emulator
+  screenshots already confirmed renders correctly). It explicitly leaves `iconImageUrl` (and
+  `listImageUrl`/`screenshotImageUrl`) at their `null` default — those three fields only ever get set
+  from `appstoreData` for apps synced from the actual app store backend, and `appstoreData = null` for
+  every sideloaded entry, unconditionally. The phone's own Locker *list* screen renders from
+  `iconImageUrl`, not from the PBW's bundled bitmap, so a blank icon there is the official mobile app's
+  own designed behavior for any sideloaded app — not specific to Delta Notes, and nothing in this repo
+  controls it. Confirms the watch-side icon path is unaffected and already verified; this should resolve
+  on its own once actually published (Phase 10), since the store backend will host an `iconImageUrl` for
+  it. Also traced (same source read) that `LockerAppScreen.kt`'s `hasSettings()` gates the Settings
+  button on exactly `LockerEntry.configurable`, which for a sideloaded app resolves to
+  `info.capabilities.any { it == "configurable" }` — i.e. the Phase 9 `capabilities` addition is real,
+  functionally-read metadata in the *current* `coredevices/mobileapp` source, not just documentation.
+  (`CLAUDE.md` already recorded the Settings button working on 2026-09-09, before that field existed —
+  most likely a slightly different app version at the time, or another path this read didn't need to
+  chase since the end result either way is already confirmed real; noted rather than investigated
+  further, since it doesn't change what to do here.)
 
 - [x] **Phase 8a — docs/SETUP.md and docs/TROUBLESHOOTING.md**
   Both written and reflect real, tested behavior (not aspirational): `SETUP.md` covers both deploy paths

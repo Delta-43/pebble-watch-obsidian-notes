@@ -55,6 +55,15 @@ Two different icons, already committed, sized for two different jobs — don't c
   fetchable from the current SDK docs — Core Devices' publishing flow is newer than most of what's
   indexed. Have both sizes ready and match whatever the upload field asks for.
 
+**If a sideloaded install shows a blank/default icon in the phone app's Locker, that's expected, not a
+bug** — confirmed by reading `coredevices/mobileapp`'s own source. A sideloaded app's `LockerEntry` (see
+`PbwApp.toLockerEntry()` in `libpebble3/.../disk/pbw/PbwApp.kt`) only ever populates `pbwIconResourceId`
+(the on-**watch** icon — this repo's `APP_ICON`, already confirmed correct in Phase 7) and leaves
+`iconImageUrl` (what the phone's own Locker *list* actually renders from) at its `null` default, because
+that field only ever comes from `appstoreData`, which is unconditionally `null` for every sideloaded
+entry. This isn't something this repo's assets or manifest can fix — it resolves itself once the app is
+actually published and the store backend has a hosted icon URL to serve.
+
 ## Screenshots
 
 Four curated shots, captured on the emulator (see [`docs/SETUP.md`](SETUP.md) for the real-hardware
@@ -124,7 +133,5 @@ not confirmed against the actual current portal, which wasn't reachable from her
 
 ## Not done in this phase
 
-- **Phase 7's real-hardware Locker icon check** (`APP_ICON` rendering correctly in the real Pebble mobile
-  app's Locker) is still the user's own to confirm — needs a real phone, not the emulator.
 - Actual submission is Phase 10, and stays manual — it needs the user's own developer account
   credentials, which this repo/session has no access to and shouldn't.
